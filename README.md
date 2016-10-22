@@ -1,1 +1,1 @@
-# arquitecturaPLI-2016-2017
+# Práctica Procesadores de Lenguaje I 2016-2017
