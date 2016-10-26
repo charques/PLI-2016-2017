@@ -1,6 +1,6 @@
 package compiler.syntax;
 
-// Declaración de importaciones 
+// Declaraciï¿½n de importaciones 
 //(No modificar las proporcionadas. Se pueden agregar mas)
 
 import java_cup.runtime.Symbol;
@@ -23,7 +23,7 @@ import compiler.semantic.type.*;
 import compiler.intermediate.*;
 import compiler.code.*;
 
-// Declaración del código de usuario
+// Declaraciï¿½n del cï¿½digo de usuario
 
 action code {:
 	
@@ -50,14 +50,63 @@ parser code {:
 	}
 :}
 
-// Declaración de terminales (Ejemplo)
+// Declaraciï¿½n de terminales (Ejemplo)
 
 terminal Token PLUS;
 terminal Token MINUS;
+terminal Token DIVISION;
+terminal Token PRODUCT;
+
+terminal Token STRING;
+terminal Token INTEGER_LITERAL;
+
+terminal Token AND;
+terminal Token ARRAY;
+terminal Token BEGIN;
+terminal Token BOOLEAN;
+terminal Token CONST;
+terminal Token DO;
+terminal Token ELSE;
+terminal Token END;
+terminal Token FALSE;
+terminal Token FOR;
+terminal Token IF;
+terminal Token INTEGER;
+terminal Token MODULE;
+terminal Token NOT;
+terminal Token OF;
+terminal Token OR;
+terminal Token PROCEDURE;
+terminal Token RECORD;
+terminal Token RETURN;
+terminal Token THEN;
+terminal Token TO;
+terminal Token TRUE;
+terminal Token TYPE;
+terminal Token VAR;
+terminal Token WHILE;
+terminal Token WRITESTRING;
+terminal Token WRITEINT;
+terminal Token WRITELN;
+
+terminal Token ASSIGNMENT;
+terminal Token EQUAL;
+terminal Token LESS_THAN;
+terminal Token MORE_THAN;
+terminal Token NOT_EQUAL;
+terminal Token DOT;
+terminal Token COMMA;
+terminal Token COLON;
+terminal Token SEMICOLON;
+terminal Token LEFT_PARENTHESIS;
+terminal Token RIGHT_PARENTHESIS;
+terminal Token LEFT_BRACKET;
+terminal Token RIGHT_BRACKET;
+terminal Token IDENTIFIER;
 // ...
 
 
-// Declaración de no terminales
+// Declaraciï¿½n de no terminales
 // no modificar los propuestos
 
 non terminal  			program;
@@ -65,12 +114,12 @@ non terminal Axiom		axiom;
 // ...
 
 
-// Declaración de relaciones de precedencia
+// Declaraciï¿½n de relaciones de precedencia
 precedence left     PLUS,
                     MINUS;
 // ...
 
-// Declaración de reglas de producción
+// Declaraciï¿½n de reglas de producciï¿½n
 
 
 start with program;
@@ -81,14 +130,14 @@ program ::=
    :}
   axiom:ax
   {: 
-  		// No modificar esta estructura, aunque se pueden añadir más acciones semánticas
+  		// No modificar esta estructura, aunque se pueden aï¿½adir mï¿½s acciones semï¿½nticas
   		// Para la entrega de febrero pueden comentarse las dos sentencias siguientes:
   		//List intermediateCode = ax.getIntermediateCode ();
   		//finalCodeFactory.create (intermediateCode);
   		// En caso de no comentarse las sentencias anteriores puede generar una excepcion
   		// en las llamadas a cupTest en la entrega de Febrero. Esto es debido a que 
-  		// aún no se tendrá implementada la generación de código intermedio ni final.
-  		// Para la entrega de Junio deberán descomentarse y usarse.
+  		// aï¿½n no se tendrï¿½ implementada la generaciï¿½n de cï¿½digo intermedio ni final.
+  		// Para la entrega de Junio deberï¿½n descomentarse y usarse.
   		
   		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
    :};

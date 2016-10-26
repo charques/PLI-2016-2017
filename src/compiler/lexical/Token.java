@@ -27,6 +27,21 @@ public class Token
         super (id);
         this.id = id;
     }
+    
+    /**
+     * Constructor for Token.
+     * @param id The token id.
+     * @param line The token line.
+     * @param column The token column.
+     * @param lexema The token lexema.
+     */
+    public Token(int id, int line, int column, String lexema) {
+		super(id);
+		this.setId(id);
+		this.setLine(line);
+		this.setColumn(column);
+		this.setLexema(lexema);
+	}
 
     /**
      * Returns the id.
