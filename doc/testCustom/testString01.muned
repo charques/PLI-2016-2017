@@ -1,5 +1,6 @@
 "mi cadena de texto"
 "primera cadena" "segunda cadena"
+"  "
 "¡cadena con especiales!"
 "\t cadena con tabulador"
 "cadena con salto de línea \n despues del salto"
