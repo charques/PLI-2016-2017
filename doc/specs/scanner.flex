@@ -19,7 +19,6 @@ import es.uned.lsi.compiler.lexical.LexicalError;
 %unicode
 %ignorecase
 
-
 %implements ScannerIF
 %scanerror LexicalError
 
@@ -33,51 +32,43 @@ import es.uned.lsi.compiler.lexical.LexicalError;
 
 WHITE_SPACE = [ \t\r\n\f]
 IDENTIFIER_OR_KEYWORD = [a-zA-Z] [a-zA-Z0-9]*
-IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9]+
+IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9._áéíóúÁÉÍÓÚçÇ$%&/¡!¿?]+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
-// STRING_TEXT = ([^\n\"])*
-COMMENT_TEXT = [^*)]+
-// ( [^*] | \*+ [^(*] )*
+INTEGER_MALFORMED = 0+[1-9]*
+COMMENT_TEXT = ([^*)]|[^(*])*
 
+// ( [^*] | \*+ [^(*] )*
 // ç_~@#$&%¬^*()_+[\\]{}|\\,.¿?:-
+
+// TODO: identificadores sin caracteres especiales
+
+// Aunque Java permite utilizar caracteres con tildes y la ñ, se recomienda no utilizarlos en la 
+// práctica debido a que pueden dar problemas durante la corrección si se utilizan codificaciones 
+// distintas a la del material inicial.
+// El compilador debe ser capaz de leer saltos de línea formados por "\r", "\r\n" o "\n". Este tema 
+// se aborda en el item 7 del documento FAQ Análisis Léxico.
+// Un error típico al crear el analizador léxico para que no acepte números que empiecen por 0 
+// (como por ejemplo 09 o 007), es no considerar como válido el número cero. Se debe de prestar especial atención a ello.
 
 %%
 
-<YYINITIAL,COMMENT> \n { }
-
-<YYINITIAL> "(*" { 
-	yybegin(COMMENT);
-	commentCount  = commentCount + 1;
-	System.out.println("1 " + yytext());
-}
-<YYINITIAL> "*)" {
-	LexicalErrorUtil.error(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, yytext());
-}
-
-<COMMENT> "(*" { 
-	System.out.println("2 " + yytext());
-	commentCount  = commentCount + 1; }
-<COMMENT> "*)" {
-	commentCount  = commentCount - 1; 
-	if (commentCount < 0) {
-		System.out.println("4 " + yytext());
-		
-		// OJO: tiene sentido aqui? ya no por la regla de texto que deja fuera los cierres
-		
-		LexicalErrorUtil.error(LexicalErrorUtil.E_ENDCOMMENT, yyline + 1, yycolumn + 1, yytext());
-	}
-	if (commentCount == 0) {
-		System.out.println("5 " + yytext());
-		yybegin(YYINITIAL);
-	}
-}
-<COMMENT> {COMMENT_TEXT} { 
-	System.out.println("6 " + yytext());
-	/* ignore */ 
-}
-
 <YYINITIAL> 
 {
+	// Comment
+	"(*" { 
+		yybegin(COMMENT);
+		commentCount = commentCount + 1;
+	}
+	"*)" { LexicalErrorUtil.error(LexicalErrorUtil.E_ENDCOMMENT, yyline + 1, yycolumn + 1, ""); }
+
+	// Literals
+	{INTEGER_LITERAL} 	{ return (new Token(sym.INTEGER_LITERAL, yyline + 1, yycolumn + 1, yytext())); }
+	{INTEGER_MALFORMED} { LexicalErrorUtil.error(LexicalErrorUtil.E_WRONGINTEG, yyline + 1, yycolumn + 1, yytext()); }
+	\" { 
+		string.setLength(0);
+		yybegin(STRING); 
+	}
+
 	// Identifier or keyword
 	{IDENTIFIER_OR_KEYWORD} {
 		Integer keywordId = KeywordMapUtil.getKeywordId(yytext());
@@ -90,10 +81,6 @@ COMMENT_TEXT = [^*)]+
 	}
 	{IDENTIFIER_MALFORMED} { LexicalErrorUtil.error(LexicalErrorUtil.E_WRONGIDENT, yyline + 1, yycolumn + 1, yytext()); }
 	
-	// Literals
-	{INTEGER_LITERAL} 	{ return (new Token(sym.INTEGER_LITERAL, yyline + 1, yycolumn + 1, yytext())); }
-	\" { string.setLength(0); yybegin(STRING); }
-    
     // Delimiters
     "("		{ return (new Token(sym.LEFT_PARENTHESIS, yyline + 1, yycolumn + 1, yytext())); }
 	")"		{ return (new Token(sym.RIGHT_PARENTHESIS, yyline + 1, yycolumn + 1, yytext())); }
@@ -121,6 +108,17 @@ COMMENT_TEXT = [^*)]+
     // no match
 	[^]	{ LexicalErrorUtil.error(LexicalErrorUtil.E_UNMATCHED, yyline + 1, yycolumn + 1, yytext()); }
 }
+	
+<COMMENT> {
+	"(*" { commentCount  = commentCount + 1; }
+	"*)" {
+		commentCount  = commentCount - 1;
+		if (commentCount == 0) {
+			yybegin(YYINITIAL);
+		}
+	}
+	(.|\n) { /* ignore */ }
+}
 
 <STRING> {
 	\" { 
@@ -140,6 +138,12 @@ COMMENT_TEXT = [^*)]+
     }
 }
 
+<<EOF>> {
+	if (commentCount > 0) {
+		LexicalErrorUtil.error(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, "");
+	}
+	return null;
+}
 
 
 

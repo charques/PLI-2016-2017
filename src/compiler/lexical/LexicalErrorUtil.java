@@ -12,13 +12,15 @@ public class LexicalErrorUtil {
 			"Error: Unmatched start-of-comment punctuation.", 
 			"Error: Unclosed string.",
 			"Error: Malformed identifier.",
+			"Error: Malformed integer.",
 			"Error: Illegal character."};
 
 	public static final int E_ENDCOMMENT = 0;
 	public static final int E_STARTCOMMENT = 1;
 	public static final int E_UNCLOSEDSTR = 2;
 	public static final int E_WRONGIDENT = 3;
-	public static final int E_UNMATCHED = 4;
+	public static final int E_WRONGINTEG = 4;
+	public static final int E_UNMATCHED = 5;
 	
 	public static void error(int code, int line, int column, String lexema) {
 		LexicalError error = createLexicalError(code, line, column, lexema);

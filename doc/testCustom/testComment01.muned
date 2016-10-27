@@ -1,0 +1,14 @@
+(**)
+(* comentario válido *)
+(* Esto es un (comentario) valido*? *)
+(* Este comentario contiene varias líneas
+           Esta es la primera línea
+Esta es la segunda línea *)
+(* Este es un comentario con comentarios anidados correctamente
+          (* Comentario Anidado 1
+                (* Comentario Anidado 1.1 *)
+                (* Comentario anidado 1.2 *)
+*) *)
+(* Este es un comentario mal balanceado *) *)
+(* Este es un comentario (* mal balanceado *)
+
