@@ -16,22 +16,30 @@ import es.uned.lsi.compiler.lexical.LexicalError;
 %column
 %cup
 
+%unicode
+%ignorecase
+
+
 %implements ScannerIF
 %scanerror LexicalError
 
 %{
+	StringBuffer string = new StringBuffer();
   	private int commentCount = 0;
 %}  
 
 %state COMMENT
+%state STRING
 
 WHITE_SPACE = [ \t\r\n\f]
 IDENTIFIER_OR_KEYWORD = [a-zA-Z] [a-zA-Z0-9]*
-IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9_.]+
+IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9]+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
-STRING_TEXT = ([^\n\"])*
+// STRING_TEXT = ([^\n\"])*
 COMMENT_TEXT = [^*)]+
-//( [^*] | \*+ [^(*] )*
+// ( [^*] | \*+ [^(*] )*
+
+// ç_~@#$&%¬^*()_+[\\]{}|\\,.¿?:-
 
 %%
 
@@ -84,8 +92,7 @@ COMMENT_TEXT = [^*)]+
 	
 	// Literals
 	{INTEGER_LITERAL} 	{ return (new Token(sym.INTEGER_LITERAL, yyline + 1, yycolumn + 1, yytext())); }
-	\"{STRING_TEXT}\" 	{ return (new Token(sym.STRING, yyline + 1, yycolumn + 1, yytext())); }
-	\"{STRING_TEXT} 	{ LexicalErrorUtil.error(LexicalErrorUtil.E_UNCLOSEDSTR, yyline + 1, yycolumn + 1, yytext()); }
+	\" { string.setLength(0); yybegin(STRING); }
     
     // Delimiters
     "("		{ return (new Token(sym.LEFT_PARENTHESIS, yyline + 1, yycolumn + 1, yytext())); }
@@ -113,6 +120,24 @@ COMMENT_TEXT = [^*)]+
 
     // no match
 	[^]	{ LexicalErrorUtil.error(LexicalErrorUtil.E_UNMATCHED, yyline + 1, yycolumn + 1, yytext()); }
+}
+
+<STRING> {
+	\" { 
+		yybegin(YYINITIAL);
+		int column = yycolumn - string.toString().length();
+		return (new Token(sym.STRING, yyline + 1, column, string.toString())); 
+	}
+	[^\n\r\"\\]+	{ string.append( yytext() ); }
+    \\t				{ string.append('\t'); }
+    \\n				{ string.append('\n'); }
+	\\r             { string.append('\r'); }
+    \\\"            { string.append('\"'); }
+    \\              { string.append('\\'); }
+    [^]	{
+    	LexicalErrorUtil.error(LexicalErrorUtil.E_UNCLOSEDSTR, yyline + 1, yycolumn + 1, string.toString());
+    	yybegin(YYINITIAL);
+    }
 }
 
 

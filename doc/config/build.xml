@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <project name="compiler" default="build" basedir="../..">
 	<!-- basedir la raiz de la estructura de directorios -->
@@ -8,10 +8,10 @@
 		se quiera compilar
 	-->
 	
-	<property name="test-file-name" value="testCase01.muned"/>
+	<property name="test-file-name" value="testString01.muned"/>
 	
 	<property name="lib" location="lib"/>
-	<property name="test" location="doc/test"/>
+	<property name="test" location="doc/testCustom"/>
 	<property name="specs" location="doc/specs"/>
 	<property name="sourceBase" location="src"/>
 	<property name="classes" location="classes"/>
