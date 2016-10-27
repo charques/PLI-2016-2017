@@ -1,0 +1,188 @@
+
+- comentarios (estado)
+    - gestionar todos los casos y mostrar errores.
+- strings (estado)
+    - usar estado y no meter comillasmora
+    OK - gestionar comentarios no cerrados.
+- identificadores
+    OK - debe sacar un error el analizador lexico si se detecta un identificador que empieza por número?
+
+- probar casos de error
+    - numeros negativos. ¿debe sacar un error si se introduce un negativo?
+    OK - comentarios no cerrados (y resto de casos)
+    OK - cadenas no cerradas
+    - algo no reconocido???
+- valores asociados a los lexemas.
+  - se mete el valor del lexema en expresiones "fijas"
+
+- case sensitive keywords?? Son mayusculas, sino se identificará como un identificador. ¿no debería generar errror?
+- en los identificadores... se guardan los lexemas en minusculas por para que el sinstactico ddetecte los duplicados
+
+
+
+1. nombre ilegales de identificadores: un nombre contiene caracteres inv´alidos.
+2. n´umeros incorrectos: un n´umero contiene caracteres inv´alidos
+o no est´a formado correctamente, por ejemplo 3,14 en vez
+de 3.14 ´o 0.3.14.
+3. errores de ortograf´ıa en palabras reservadas: caracteres omitidos,
+adicionales o cambiados de sitio, por ejemplo la palabra
+hwile en vez de while.
+4. fin de archivo: se detecta un fin de archivo a la mitad de un
+componente l´exico.
+
+identifier = [a-b] [a-b0-9]*
+//identifier = [:jletter:] [:jletterdigit:]*
+
+(**)
+(* comentario válido *)
+(* Esto es un (comentario) valido*? *)
+(* Este comentario contiene varias líneas
+           Esta es la primera línea
+Esta es la segunda línea *)
+(* Este es un comentario con comentarios anidados correctamente
+          (* Comentario Anidado 1
+                (* Comentario Anidado 1.1 *)
+                (* Comentario anidado 1.2 *)
+*) *)
+(* Este es un comentario mal balanceado *) *)
+
+
+
+(* comentario no válido
+
+(* comentario válido con salto de linea - OK
+*)
+
+comentario no abierto - KO *)
+
+
+
+<COMMENT> {
+	[^*)]* {
+		/* Eat non-comment delimiters */
+	}
+	"(*" {
+		commentCount  = commentCount + 1;
+		System.out.println("OPEN INNER " + yytext() + " - " + commentCount);
+	}
+	"*)" {
+		commentCount  = commentCount - 1;
+		System.out.println("CLOSE " + yytext() + " - " + commentCount);
+
+		if (commentCount == 0) {
+			System.out.println("REDIRECT INITIAL " + yytext() + " " + commentCount);
+			yybegin(YYINITIAL);
+		}
+	}
+	[*/] {
+		/* ignore */
+	}
+	{COMMENT_TEXT} {
+		System.out.println("TEXT " + yytext() + " " + commentCount);
+		/* ignore */
+	}
+	[^]	{
+		System.out.println("** COLADOR " + " " + commentCount + " " + yytext());
+    	LexicalErrorUtil.error(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, "");
+    	yybegin(YYINITIAL);
+    }
+}
+
+
+
+
+
+
+\"{STRING_TEXT}\" 	{ return (new Token(sym.STRING, yyline + 1, yycolumn + 1, yytext())); }
+\"{STRING_TEXT} 	{ LexicalErrorUtil.error(LexicalErrorUtil.E_UNCLOSEDSTR, yyline + 1, yycolumn + 1, yytext()); }
+
+
+<YYINITIAL> "*)" {
+	LexicalErrorUtil.error(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, yytext());
+}
+
+
+/*\"{STRING_TEXT}\" {
+		return (new Token(sym.STRING, yyline + 1, yycolumn + 1, yytext()));
+	}
+
+
+":="		{return tok(sym.ASOP, null); }
+"+"		{return tok(sym.MAS, null); }
+"="		{return tok(sym.IGUALQUE, null); }
+"{"		{return tok(sym.ABRELLAVE, null); }
+"}"		{return tok(sym.CIERRALLAVE, null); }
+","		{return tok(sym.COMA, null); }
+"("		{return tok(sym.PAREN, null); }
+")"		{return tok(sym.TESIS, null); }
+if		{return tok(sym.IF, null); }
+then		{return tok(sym.THEN, null); }
+endif		{return tok(sym.ENDIF, null); }
+prog		{return tok(sym.PROG, null); }
+in		{return tok(sym.IN, null); }
+out		{return tok(sym.OUT, null); }
+local		{return tok(sym.LOCAL, null); }
+true		{return tok(sym.CLOG, new Boolean(true)); }
+false		{return tok(sym.CLOG, new Boolean(false)); }
+int		{return tok(sym.TIPO, new Boolean(Tipos.tint)); }
+bool		{return tok(sym.TIPO, new Boolean(Tipos.tbool)); }
+[0-9]+		{return tok(sym.CENT, new Integer(yytext())); }
+{letra}({letra}|[0-9])*	{return tok(sym.IDENT, yytext()); }
+
+
+terminal Token AND;
+terminal Token ARRAY;
+terminal Token BEGIN;
+terminal Token BOOLEAN;
+terminal Token CONST;
+terminal Token DO;
+terminal Token ELSE;
+terminal Token END;
+terminal Token FALSE;
+terminal Token FOR;
+terminal Token IF;
+terminal Token INTEGER;
+terminal Token MODULE;
+terminal Token NOT;
+terminal Token OF;
+terminal Token OR;
+terminal Token PROCEDURE;
+
+terminal Token RECORD;
+terminal Token RETURN;
+terminal Token THEN;
+terminal Token TO;
+terminal Token TRUE;
+terminal Token TYPE;
+terminal Token VAR;
+terminal Token WHILE;
+terminal Token WRITESTRING;
+terminal Token WRITEINT;
+terminal Token WRITELN;
+
+
+keywordMap.put("ARRAY", sym.ARRAY);
+  	keywordMap.put("BEGIN", sym.BEGIN);
+  	keywordMap.put("BOOLEAN", sym.BOOLEAN);
+  	keywordMap.put("CONST", sym.CONST);
+  	keywordMap.put("DO", sym.DO);
+  	keywordMap.put("ELSE", sym.ELSE);
+  	keywordMap.put("FALSE", sym.FALSE);
+  	keywordMap.put("IF", sym.IF);
+  	keywordMap.put("INTEGER", sym.INTEGER);
+  	keywordMap.put("MODULE", sym.MODULE);
+  	keywordMap.put("NOT", sym.NOT);
+  	keywordMap.put("OF", sym.OF);
+  	keywordMap.put("OR", sym.OR);
+  	keywordMap.put("PROCEDURE", sym.PROCEDURE);
+  	keywordMap.put("RECORD", sym.RECORD);
+  	keywordMap.put("RETURN", sym.RETURN);
+  	keywordMap.put("THEN", sym.THEN);
+  	keywordMap.put("TO", sym.TO);
+  	keywordMap.put("TRUE", sym.TRUE);
+  	keywordMap.put("TYPE", sym.TYPE);
+  	keywordMap.put("VAR", sym.VAR);
+  	keywordMap.put("WHILE", sym.WHILE);
+  	keywordMap.put("WRITESTRING", sym.WRITESTRING);
+  	keywordMap.put("WRITEINT", sym.WRITEINT);
+  	keywordMap.put("WRITELN", sym.WRITELN);
