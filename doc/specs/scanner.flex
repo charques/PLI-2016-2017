@@ -35,11 +35,8 @@ IDENTIFIER_OR_KEYWORD = [a-zA-Z] [a-zA-Z0-9]*
 IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9._áéíóúÁÉÍÓÚçÇ$%&/¡!¿?]+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
 INTEGER_MALFORMED = 0+[1-9]*
-COMMENT_TEXT = ([^*)]|[^(*])*
 
-// ( [^*] | \*+ [^(*] )*
-// ç_~@#$&%¬^*()_+[\\]{}|\\,.¿?:-
-
+// TODO: probar notacion punto
 // TODO: identificadores sin caracteres especiales
 
 // Aunque Java permite utilizar caracteres con tildes y la ñ, se recomienda no utilizarlos en la 
