@@ -32,7 +32,7 @@ import es.uned.lsi.compiler.lexical.LexicalError;
 
 WHITE_SPACE = [ \t\r\n\f]
 IDENTIFIER_OR_KEYWORD = [a-zA-Z] [a-zA-Z0-9]*
-IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9._áéíóúÁÉÍÓÚçÇ$%&/¡!¿?]+
+IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9_áéíóúÁÉÍÓÚçÇ$%&¡!¿?]+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
 INTEGER_MALFORMED = 0+[1-9]*
 

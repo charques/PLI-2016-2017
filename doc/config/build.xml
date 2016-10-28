@@ -8,10 +8,10 @@
 		se quiera compilar
 	-->
 	
-	<property name="test-file-name" value="testIdentifier01.muned"/>
+	<property name="test-file-name" value="testCase08.muned"/>
 	
 	<property name="lib" location="lib"/>
-	<property name="test" location="doc/testCustom"/>
+	<property name="test" location="doc/test"/>
 	<property name="specs" location="doc/specs"/>
 	<property name="sourceBase" location="src"/>
 	<property name="classes" location="classes"/>
