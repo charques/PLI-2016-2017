@@ -36,17 +36,6 @@ IDENTIFIER_MALFORMED = [0-9]* [a-zA-Z0-9_áéíóúÁÉÍÓÚçÇ$%&¡!¿?]+
 INTEGER_LITERAL = 0 | [1-9][0-9]*
 INTEGER_MALFORMED = 0+[1-9]*
 
-// TODO: probar notacion punto
-// TODO: identificadores sin caracteres especiales
-
-// Aunque Java permite utilizar caracteres con tildes y la ñ, se recomienda no utilizarlos en la 
-// práctica debido a que pueden dar problemas durante la corrección si se utilizan codificaciones 
-// distintas a la del material inicial.
-// El compilador debe ser capaz de leer saltos de línea formados por "\r", "\r\n" o "\n". Este tema 
-// se aborda en el item 7 del documento FAQ Análisis Léxico.
-// Un error típico al crear el analizador léxico para que no acepte números que empiecen por 0 
-// (como por ejemplo 09 o 007), es no considerar como válido el número cero. Se debe de prestar especial atención a ello.
-
 %%
 
 <YYINITIAL> 
