@@ -111,13 +111,13 @@ non terminal  			program;
 non terminal Axiom		axiom;
 non terminal			module_header, declaration_blocks_spec, begin_spec, end_spec;
 non terminal			const_spec, const_list, const, const_value;
-non terminal			var_spec, var_list, var_block, ident_list, var_type;
+non terminal			var_spec, var_list, var_block;
 non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_end;
-non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values;
+non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values, by_reference;
 non terminal			sent_spec;
 non terminal			expr_list, expr_part, expr;
 
-non terminal			prim_types;
+non terminal			ident_list, ident_sub_list, var_type, prim_types;
 
 // Declaracion de relaciones de precedencia
 precedence left     PLUS, MINUS;
@@ -170,7 +170,7 @@ record_end ::= END SEMICOLON;
 /* vars */
 var_spec  ::=  VAR var_list | /* empty */;
 var_list ::= var_block var_list | /* empty */;
-var_block ::= IDENTIFIER ident_list COLON var_type SEMICOLON;
+var_block ::= ident_list COLON var_type SEMICOLON;
 
 /* subprograms */
 subp_spec ::= subp_list | /* empty */;
@@ -185,11 +185,13 @@ func_return_values ::= IDENTIFIER | INTEGER_LITERAL;
 subp_params ::= LEFT_PARENTHESIS param_block_list RIGHT_PARENTHESIS | /* empty */;
 param_block_list ::= param_block param_block_sub_list;
 param_block_sub_list ::= SEMICOLON param_block param_block_sub_list | /* empty */;
-param_block ::= IDENTIFIER ident_list COLON var_type;
+param_block ::= by_reference ident_list COLON var_type;
+by_reference ::= VAR | /* empty */;
 
 sent_spec ::= expr_list | /* empty */;
 
 /* common */
-ident_list  ::= ident_list COMMA IDENTIFIER | /* empty */;
+ident_list ::= IDENTIFIER ident_sub_list;
+ident_sub_list  ::= ident_sub_list COMMA IDENTIFIER | /* empty */;
 var_type ::= IDENTIFIER | INTEGER | BOOLEAN;
 prim_types ::= INTEGER | BOOLEAN;

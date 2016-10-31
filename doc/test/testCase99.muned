@@ -28,7 +28,7 @@ MODULE cuatro;
     b : TipoVectorBooleanos;
     juan, Maria : TipoPersona;
     
-  PROCEDURE invertir (v, v2 : TipoVector; va : INTEGER);
+  PROCEDURE invertir (VAR v, v2 : TipoVector; va : INTEGER);
       VAR aux, index: INTEGER;
       BEGIN
       
