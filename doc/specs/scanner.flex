@@ -79,8 +79,8 @@ INTEGER_MALFORMED = 0+[1-9]*
 	// Operators
 	"-" 	{ return (new Token(sym.MINUS, yyline + 1, yycolumn + 1, yytext())); }
 	"+" 	{ return (new Token(sym.PLUS, yyline + 1, yycolumn + 1, yytext())); }
-    "*" 	{ return (new Token(sym.PRODUCT, yyline + 1, yycolumn + 1, yytext())); }
-    "/" 	{ return (new Token(sym.DIVISION, yyline + 1, yycolumn + 1, yytext())); }
+    "*" 	{ return (new Token(sym.TIMES, yyline + 1, yycolumn + 1, yytext())); }
+    "/" 	{ return (new Token(sym.DIVIDE, yyline + 1, yycolumn + 1, yytext())); }
     "<"		{ return (new Token(sym.LESS_THAN, yyline + 1, yycolumn + 1, yytext())); }
 	">"		{ return (new Token(sym.MORE_THAN, yyline + 1, yycolumn + 1, yytext())); }
 	"="		{ return (new Token(sym.EQUAL, yyline + 1, yycolumn + 1, yytext())); }
@@ -130,9 +130,3 @@ INTEGER_MALFORMED = 0+[1-9]*
 	}
 	return null;
 }
-
-
-
-                         
-
-

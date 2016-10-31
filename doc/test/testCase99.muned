@@ -1,0 +1,29 @@
+MODULE cuatro;
+
+  (* pruebas con operaciones *)
+
+  CONST 
+  	A = 10;
+	B = 20;
+	
+  TYPE 
+  	TipoPersona = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
+      
+    TipoPersona2 = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
+      
+  VAR 
+  	division : INTEGER;
+	a1, b1:INTEGER;
+	bol1, bol2, bol3 : BOOLEAN;
+	
+  BEGIN
+	    
+  END cuatro;

@@ -33,6 +33,22 @@ componente l´exico.
 identifier = [a-b] [a-b0-9]*
 //identifier = [:jletter:] [:jletterdigit:]*
 
+
+expr SEMICOLON;
+expr  ::= MODULE IDENTIFIER
+		| END IDENTIFIER
+		| expr PLUS expr
+        | expr MINUS expr
+        | expr TIMES expr
+       	| expr DIVIDE expr
+	    | LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
+	    | NUMBER_LITERAL
+	    | IDENTIFIER
+	    ;
+
+
+
+
 (**)
 (* comentario válido *)
 (* Esto es un (comentario) valido*? *)

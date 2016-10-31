@@ -23,7 +23,7 @@ import compiler.semantic.type.*;
 import compiler.intermediate.*;
 import compiler.code.*;
 
-// Declaraci�n del c�digo de usuario
+// Declaracion del codigo de usuario
 
 action code {:
 	
@@ -50,12 +50,12 @@ parser code {:
 	}
 :}
 
-// Declaraci�n de terminales (Ejemplo)
+// Declaracion de terminales
 
 terminal Token PLUS;
 terminal Token MINUS;
-terminal Token DIVISION;
-terminal Token PRODUCT;
+terminal Token DIVIDE;
+terminal Token TIMES;
 
 terminal Token STRING;
 terminal Token INTEGER_LITERAL;
@@ -103,24 +103,24 @@ terminal Token RIGHT_PARENTHESIS;
 terminal Token LEFT_BRACKET;
 terminal Token RIGHT_BRACKET;
 terminal Token IDENTIFIER;
-// ...
 
-
-// Declaraci�n de no terminales
+// Declaracion de no terminales
 // no modificar los propuestos
 
 non terminal  			program;
 non terminal Axiom		axiom;
-// ...
+non terminal			module_spec, begin_spec, body_spec, end_spec;
+non terminal			const_spec, const_list, const, const_value;
+non terminal			var_spec, var_list, var_block, ident_list, var_type;
+non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_var_type, record_end;
+non terminal			expr_list, expr_part, expr;
 
 
-// Declaraci�n de relaciones de precedencia
-precedence left     PLUS,
-                    MINUS;
-// ...
+// Declaracion de relaciones de precedencia
+precedence left     PLUS, MINUS;
+precedence left     TIMES, DIVIDE;
 
-// Declaraci�n de reglas de producci�n
-
+// Declaracion de reglas de produccion
 
 start with program;
 
@@ -143,4 +143,31 @@ program ::=
    :};
 
 
-axiom ::= ;
+axiom ::= 	module_spec const_spec type_spec var_spec begin_spec body_spec end_spec; 
+
+module_spec ::= MODULE IDENTIFIER SEMICOLON;
+
+const_spec ::= CONST const_list | /* empty */;
+const_list ::= const_list const | const;
+const ::= IDENTIFIER EQUAL const_value SEMICOLON;
+const_value ::= INTEGER_LITERAL | TRUE | FALSE;
+
+type_spec ::= TYPE type_list | /*empty */;
+type_list ::= type_list record_type | record_type;
+record_type ::= record_header record_var_list record_end;
+record_header ::= IDENTIFIER EQUAL RECORD;
+record_var_list ::= record_var_list record_var | record_var;
+record_var ::= IDENTIFIER COLON record_var_type SEMICOLON;
+record_end ::= END SEMICOLON;
+record_var_type ::= INTEGER | BOOLEAN;
+
+var_spec  ::=  VAR var_list | /* empty */;
+var_list ::= var_block var_list | /* empty */;
+var_block ::= IDENTIFIER ident_list COLON var_type SEMICOLON;
+ident_list  ::= ident_list COMMA IDENTIFIER | /* empty */;
+var_type ::= IDENTIFIER | INTEGER | BOOLEAN;
+
+begin_spec ::= BEGIN;
+body_spec ::= expr_list | /* empty */;
+end_spec ::= END IDENTIFIER SEMICOLON;
+
