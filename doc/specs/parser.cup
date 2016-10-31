@@ -109,12 +109,15 @@ terminal Token IDENTIFIER;
 
 non terminal  			program;
 non terminal Axiom		axiom;
-non terminal			module_spec, begin_spec, body_spec, end_spec;
+non terminal			module_header, declaration_blocks_spec, begin_spec, end_spec;
 non terminal			const_spec, const_list, const, const_value;
 non terminal			var_spec, var_list, var_block, ident_list, var_type;
-non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_var_type, record_end;
+non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_end;
+non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values;
+non terminal			sent_spec;
 non terminal			expr_list, expr_part, expr;
 
+non terminal			prim_types;
 
 // Declaracion de relaciones de precedencia
 precedence left     PLUS, MINUS;
@@ -142,32 +145,51 @@ program ::=
   		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
    :};
 
+/* module */
+axiom ::= module_header declaration_blocks_spec begin_spec sent_spec end_spec; 
+module_header ::= MODULE IDENTIFIER SEMICOLON;
+declaration_blocks_spec ::= const_spec type_spec var_spec subp_spec;
+begin_spec ::= BEGIN;
+end_spec ::= END IDENTIFIER SEMICOLON;
 
-axiom ::= 	module_spec const_spec type_spec var_spec begin_spec body_spec end_spec; 
-
-module_spec ::= MODULE IDENTIFIER SEMICOLON;
-
+/* constants */
 const_spec ::= CONST const_list | /* empty */;
 const_list ::= const_list const | const;
 const ::= IDENTIFIER EQUAL const_value SEMICOLON;
 const_value ::= INTEGER_LITERAL | TRUE | FALSE;
 
+/* types - record */
 type_spec ::= TYPE type_list | /*empty */;
 type_list ::= type_list record_type | record_type;
 record_type ::= record_header record_var_list record_end;
 record_header ::= IDENTIFIER EQUAL RECORD;
 record_var_list ::= record_var_list record_var | record_var;
-record_var ::= IDENTIFIER COLON record_var_type SEMICOLON;
+record_var ::= IDENTIFIER COLON prim_types SEMICOLON;
 record_end ::= END SEMICOLON;
-record_var_type ::= INTEGER | BOOLEAN;
 
+/* vars */
 var_spec  ::=  VAR var_list | /* empty */;
 var_list ::= var_block var_list | /* empty */;
 var_block ::= IDENTIFIER ident_list COLON var_type SEMICOLON;
+
+/* subprograms */
+subp_spec ::= subp_list | /* empty */;
+subp_list ::= subp_list proc | subp_list func | proc | func;
+proc ::= proc_header declaration_blocks_spec begin_spec sent_spec end_spec;
+func ::= func_header declaration_blocks_spec begin_spec sent_spec func_return end_spec;
+proc_header ::= subp_header SEMICOLON;
+func_header ::= subp_header COLON prim_types SEMICOLON;
+subp_header ::= PROCEDURE IDENTIFIER subp_params;
+func_return ::= RETURN func_return_values SEMICOLON;
+func_return_values ::= IDENTIFIER | INTEGER_LITERAL;
+subp_params ::= LEFT_PARENTHESIS param_block_list RIGHT_PARENTHESIS | /* empty */;
+param_block_list ::= param_block param_block_sub_list;
+param_block_sub_list ::= SEMICOLON param_block param_block_sub_list | /* empty */;
+param_block ::= IDENTIFIER ident_list COLON var_type;
+
+sent_spec ::= expr_list | /* empty */;
+
+/* common */
 ident_list  ::= ident_list COMMA IDENTIFIER | /* empty */;
 var_type ::= IDENTIFIER | INTEGER | BOOLEAN;
-
-begin_spec ::= BEGIN;
-body_spec ::= expr_list | /* empty */;
-end_spec ::= END IDENTIFIER SEMICOLON;
-
+prim_types ::= INTEGER | BOOLEAN;

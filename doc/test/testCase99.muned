@@ -20,9 +20,31 @@ MODULE cuatro;
     END;
       
   VAR 
-  	division : INTEGER;
-	a1, b1:INTEGER;
-	bol1, bol2, bol3 : BOOLEAN;
+  	x, y : INTEGER;
+    abierto : BOOLEAN;
+    v1, v2 : TipoVector;
+    c1, c2 : TipoComplejo;
+    v : TipoVectorEnteros;
+    b : TipoVectorBooleanos;
+    juan, Maria : TipoPersona;
+    
+  PROCEDURE invertir (v, v2 : TipoVector; va : INTEGER);
+      VAR aux, index: INTEGER;
+      BEGIN
+      
+      END invertir;
+      
+  PROCEDURE pagar;
+      VAR aux, index: INTEGER;
+      BEGIN
+      
+      END pagar;
+      
+  PROCEDURE invertirF (v : TipoVector): INTEGER;
+      VAR aux, index: INTEGER;
+      BEGIN
+      	RETURN 0;
+      END invertir;
 	
   BEGIN
 	    
