@@ -110,18 +110,21 @@ terminal Token IDENTIFIER;
 non terminal  			program;
 non terminal Axiom		axiom;
 non terminal			module_header, declaration_blocks_spec, begin_spec, end_spec;
-non terminal			const_spec, const_list, const, const_value;
+non terminal			const_spec, const_list, const_block;
 non terminal			var_spec, var_list, var_block;
 non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_end;
 non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values, by_reference;
-non terminal			sent_spec;
-non terminal			expr_list, expr_part, expr;
+non terminal			stmt_spec;
+non terminal			stmt_list, stmt, expr, full_proc_call, proc_call_with_params, proc_call_params, expr_list, expr_sub_list, else_part;
 
-non terminal			ident_list, ident_sub_list, var_type, prim_types;
+non terminal			vector, vector_index;
+non terminal			writestring_params, writeint_params, writeln_paren;
+
+non terminal			ident_list, ident_sub_list, var_type, prim_types, const_value, ident, not_part;
 
 // Declaracion de relaciones de precedencia
-precedence left     PLUS, MINUS;
-precedence left     TIMES, DIVIDE;
+precedence left     PLUS, MINUS, DIVIDE;
+precedence left     LESS_THAN, NOT_EQUAL, AND;
 
 // Declaracion de reglas de produccion
 
@@ -133,20 +136,20 @@ program ::=
    :}
   axiom:ax
   {: 
-  		// No modificar esta estructura, aunque se pueden a�adir m�s acciones sem�nticas
+  		// No modificar esta estructura, aunque se pueden anadir mas acciones semanticas
   		// Para la entrega de febrero pueden comentarse las dos sentencias siguientes:
   		//List intermediateCode = ax.getIntermediateCode ();
   		//finalCodeFactory.create (intermediateCode);
   		// En caso de no comentarse las sentencias anteriores puede generar una excepcion
   		// en las llamadas a cupTest en la entrega de Febrero. Esto es debido a que 
-  		// a�n no se tendr� implementada la generaci�n de c�digo intermedio ni final.
-  		// Para la entrega de Junio deber�n descomentarse y usarse.
+  		// aun no se tendra implementada la generacion de codigo intermedio ni final.
+  		// Para la entrega de Junio deberan descomentarse y usarse.
   		
   		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
    :};
 
 /* module */
-axiom ::= module_header declaration_blocks_spec begin_spec sent_spec end_spec; 
+axiom ::= module_header declaration_blocks_spec begin_spec stmt_spec end_spec; 
 module_header ::= MODULE IDENTIFIER SEMICOLON;
 declaration_blocks_spec ::= const_spec type_spec var_spec subp_spec;
 begin_spec ::= BEGIN;
@@ -154,9 +157,8 @@ end_spec ::= END IDENTIFIER SEMICOLON;
 
 /* constants */
 const_spec ::= CONST const_list | /* empty */;
-const_list ::= const_list const | const;
-const ::= IDENTIFIER EQUAL const_value SEMICOLON;
-const_value ::= INTEGER_LITERAL | TRUE | FALSE;
+const_list ::= const_block const_list | /* empty */;
+const_block ::= ident_list EQUAL not_part const_value SEMICOLON;
 
 /* types - record */
 type_spec ::= TYPE type_list | /*empty */;
@@ -175,8 +177,8 @@ var_block ::= ident_list COLON var_type SEMICOLON;
 /* subprograms */
 subp_spec ::= subp_list | /* empty */;
 subp_list ::= subp_list proc | subp_list func | proc | func;
-proc ::= proc_header declaration_blocks_spec begin_spec sent_spec end_spec;
-func ::= func_header declaration_blocks_spec begin_spec sent_spec func_return end_spec;
+proc ::= proc_header declaration_blocks_spec begin_spec stmt_spec end_spec;
+func ::= func_header declaration_blocks_spec begin_spec stmt_spec func_return end_spec;
 proc_header ::= subp_header SEMICOLON;
 func_header ::= subp_header COLON prim_types SEMICOLON;
 subp_header ::= PROCEDURE IDENTIFIER subp_params;
@@ -188,10 +190,62 @@ param_block_sub_list ::= SEMICOLON param_block param_block_sub_list | /* empty *
 param_block ::= by_reference ident_list COLON var_type;
 by_reference ::= VAR | /* empty */;
 
-sent_spec ::= expr_list | /* empty */;
+/* statements */
+stmt_spec ::= stmt_list | /* empty */;
+stmt_list ::= stmt_list stmt | stmt;
+stmt ::= expr SEMICOLON 
+	| full_proc_call SEMICOLON
+	| ident ASSIGNMENT expr SEMICOLON
+	| vector ASSIGNMENT expr SEMICOLON
+	| IF expr THEN stmt_spec else_part END SEMICOLON
+	| WHILE expr DO stmt_spec END SEMICOLON
+    | WRITESTRING LEFT_PARENTHESIS writestring_params RIGHT_PARENTHESIS SEMICOLON
+    | WRITEINT LEFT_PARENTHESIS writeint_params RIGHT_PARENTHESIS SEMICOLON
+    | WRITELN writeln_paren SEMICOLON;
+
+else_part ::= ELSE stmt_spec | /* empty */;
+
+vector ::= ident LEFT_BRACKET vector_index RIGHT_BRACKET;
+vector_index ::= ident | INTEGER_LITERAL | vector;
+
+writestring_params ::= STRING | ident;
+writeint_params ::= INTEGER_LITERAL | ident;
+writeln_paren ::= LEFT_PARENTHESIS RIGHT_PARENTHESIS | /* empty */;
+
+expr ::= LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
+		 | expr PLUS expr
+		 | expr DIVIDE expr
+		 | expr NOT_EQUAL expr
+		 | expr LESS_THAN expr
+		 | expr AND expr
+		 | NOT expr
+		 | ident
+		 /*| IDENTIFIER LEFT_BRACKET vector_index RIGHT_BRACKET*/
+		 | proc_call_with_params
+		 | const_value;
+		 
+/* Una expresión es una construcción sintáctica del lenguaje que devuelve al 
+contexto donde se evalúa un valor. Son expresiones los valores constantes de cualquier 
+tipo, los identificadores de constantes, variables enumeraciones y parámetros, 
+los elementos de vector, los campos de registros, y las llamadas a funciones. 
+También son expresiones cualquier combinación sintácticamente correcta de 
+expresiones utilizando operadores aritméticos, lógicos, relacionales y expresiones 
+entre paréntesis. (Esta definición puede depender del lenguaje en concreto). */
+	 
+full_prod_call ::= IDENTIFIER | proc_call_with_params;
+proc_call_with_params ::= IDENTIFIER proc_call_params;
+proc_call_params ::= LEFT_PARENTHESIS expr_list RIGHT_PARENTHESIS;
+
+expr_list ::= expr expr_sub_list | /* empty */; 
+expr_sub_list ::= expr_sub_list COMMA expr | /* empty */; 
+
+/* extender parametrizacion de functiones */
 
 /* common */
 ident_list ::= IDENTIFIER ident_sub_list;
 ident_sub_list  ::= ident_sub_list COMMA IDENTIFIER | /* empty */;
 var_type ::= IDENTIFIER | INTEGER | BOOLEAN;
 prim_types ::= INTEGER | BOOLEAN;
+const_value ::= INTEGER_LITERAL | TRUE | FALSE;
+not_part ::= NOT | /* empty */;
+ident ::= IDENTIFIER | ident DOT IDENTIFIER;

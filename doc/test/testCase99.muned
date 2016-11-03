@@ -3,8 +3,9 @@ MODULE cuatro;
   (* pruebas con operaciones *)
 
   CONST 
-  	A = 10;
+  	A, C = 10;
 	B = 20;
+	D = NOT TRUE;
 	
   TYPE 
   	TipoPersona = RECORD
@@ -47,5 +48,84 @@ MODULE cuatro;
       END invertir;
 	
   BEGIN
+  	
+  	WRITESTRING("hola");
+  	WRITELN();
+  	WRITEINT(4);
+  
+  	juan := pepe.nuevo.ientificador;
+  	juan.edad := 23;
+    juan.dni := 1234567;
+    juan.casado := FALSE;
+    a := juan.edad;
+    
+    i := 3 + 7;
+    v[i] := 10;
+    distinto := 3<>4;
+    juan.casado := true;
+    
+    procedimiento1;
+    procedimiento1();
+    escribeVector(vectorEnteros);
+    
+    algoMas := 1<3;
+   algoMas := (1<3);
+   otraCosa := ((a+2));
+   otraCosa1 := (1+2);
+   otracosa2 := TRUE;
+   otracosa2 := NOT FALSE;
+   otracosa3 := otracosa4;
+   
+   	algo1:=(1+2+3);
+	algo2:=(a+2+3);
+	
+	algo3:=((cosa+2)/(algo4+cosa3));
+    
+	a := suma(2,2); (*llamada a función*)
+	
+	 v[1] := 3;
+(*   v[2] := 3 / v[1];
+     v[3] := v[3] + v[2];
+     b[1] := v[1] < 0;
+     b[2] := TRUE;
+     b[3] := b[1] AND b[2]; *)
+     
+    IF (a < b) THEN
+        A := b;
+	ELSE
+		A := a + b;
+		B := a; 
+	END;
+	
+	IF (a<>b) THEN (* IF anidante *)
+      a:=b;
+      IF a<c THEN (* IF anidado y sin paréntesis *)
+      	a:=c;
+	  ELSE
+		c:=a;
+	  END; 
+	ELSE
+		b:=a; 
+	END;
+	
+	IF a<>c THEN
+		a :=p;
+	END;
+	
+	WHILE a<5 DO
+         a:=a+1;
+         WRITEINT(a);
+         WRITESTRING(b);
+         WRITELN;
+         WRITELN();
+      END;
+      
+    (* WRITEINT(v[i]); 
+    WRITESTRING(v[j]); *)
+    ahora[v[1]] := TRUE;
+    
+    variabl := (NOT (a<b)) AND ((b<>c) AND (C<D) AND (NOT FALSE));
+	
+	(* IF (ahora[v[1]]<>TRUE) THEN *)
 	    
   END cuatro;
