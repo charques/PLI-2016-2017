@@ -84,11 +84,11 @@ MODULE cuatro;
 	a := suma(2,2); (*llamada a función*)
 	
 	 v[1] := 3;
-(*   v[2] := 3 / v[1];
+	 v[2] := 3 / v[1];
      v[3] := v[3] + v[2];
      b[1] := v[1] < 0;
      b[2] := TRUE;
-     b[3] := b[1] AND b[2]; *)
+     b[3] := b[1] AND b[2];
      
     IF (a < b) THEN
         A := b;
@@ -120,12 +120,17 @@ MODULE cuatro;
          WRITELN();
       END;
       
-    (* WRITEINT(v[i]); 
-    WRITESTRING(v[j]); *)
+    WRITEINT(v[i]); 
+    WRITESTRING(v[j]);
     ahora[v[1]] := TRUE;
+    
+    WRITESTRING(myFunction());
+    WRITEINT(myFunction2(a));
     
     variabl := (NOT (a<b)) AND ((b<>c) AND (C<D) AND (NOT FALSE));
 	
-	(* IF (ahora[v[1]]<>TRUE) THEN *)
+	IF (ahora[v[1]]<>TRUE) THEN
+		
+	END;
 	    
   END cuatro;

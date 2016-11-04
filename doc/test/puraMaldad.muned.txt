@@ -9,8 +9,18 @@ CONST nombre1=1;
 	 nombre5=NOT TRUE;
       nombre6,nombre7=NOT TRUE;
 	  
-TYPE nombre123123 = ARRAY [1..3] OF INTEGER;
-	 Masnombre123123, Otro = ARRAY [1..3] OF INTEGER;
+TYPE 
+  	TipoPersona = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
+      
+    TipoPersona2 = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
 	  
 VAR nombre, nombre123123 : INTEGER;
 	cosa : BOOLEAN;
@@ -20,7 +30,7 @@ VAR nombre, nombre123123 : INTEGER;
 	
 
 
-	PROCEDURE nombre4 (a: INTEGER; b, c: BOOLEAN;);
+	PROCEDURE nombre4 (a: INTEGER; b, c: BOOLEAN);
 	CONST nombre1=1;
 	VAR vayaToalla : INTEGER;
 	BEGIN
@@ -42,11 +52,11 @@ VAR nombre, nombre123123 : INTEGER;
 		RETURN nombre5;
 	END nombre4;
 	
-	(*NO HA CERRADO EL ; del 2º parametro
+	(*NO HA CERRADO EL ; del 2ï¿½ parametro
 	PROCEDURE Restar (a: INTEGER; b: INTEGER) : INTEGER;
   	VAR s: INTEGER;
  	BEGIN
- 		s := a-b;
+ 		s := a+b;
  		RETURN s; 	
  	END Restar; 
  	*)
@@ -56,25 +66,25 @@ BEGIN
  	
  	
  	
- 	bol3:=(bol1 OR (bol2 OR TRUE));
+ 	bol3:=(bol1 AND (bol2 AND TRUE));
  	
  	
-	WRITEINT(2-3);
+	(*WRITEINT(2+3);*)
 	
-	IF (ahora[v[1]]=(TRUE OR FALSE)) THEN
+	IF (ahora[v[1]]<>(TRUE AND FALSE)) THEN
 	ELSE
 	END;
 	
-	IF (a=3) THEN
+	IF (a<3) THEN
  		WRITEINT(3);
  	ELSE
- 		IF a=TRUE THEN
+ 		IF a<TRUE THEN
 	 		WRITEINT(3);
 	 	ELSE
 			WRITEINT(2);
 		END;
 		
-	 	IF a=3 THEN
+	 	IF a<>3 THEN
 	 		WRITEINT(3);
 	 	ELSE
 			WRITEINT(2);
@@ -87,10 +97,10 @@ BEGIN
 	
 	a:=3;
  
- 	algoMas:=1-3;
- 	algoMas:=(1-3);
- 	otraCosa:=((a-2));
- 	otraCosa1:=(1-2);
+ 	algoMas:=1+3;
+ 	algoMas:=(1+3);
+ 	otraCosa:=((a+2));
+ 	otraCosa1:=(1+2);
  	otracosa2:=TRUE;
  	otracosa2:=NOT FALSE;
  	otracosa3:=otracosa4;
@@ -99,33 +109,32 @@ BEGIN
  	v[1] := v[2];
 	
 	
-	algo1:=(1-2-3);
-	algo2:=(a-2-3);
+	algo1:=(1+2+3);
+	algo2:=(a+2+3);
 	  
-	algo3:=((cosa-2)*(algo4-cosa3));
+	algo3:=((cosa+2)/(algo4+cosa3));
 	
 
 	WRITELN;
-	FOR a:=1 TO 2 
-	DO 
+	WHILE a<5 DO
 		WRITESTRING("nombre");
 		vectoresIndice[a]:=TRUE;
 	END;
 	
-	IF (a-3) THEN
+	IF (a+3) THEN
 		WRITEINT(2);
 	END;
 	
  	
 	
-	A:= TRUE OR FALSE;
+	A:= TRUE AND FALSE;
 	
-	a:=(4-1) > (3-5);
+	a:=(4+1) < (3+5);
 	
 d:=resta(n , cojones, c, vectoresIndice[a], TRUE);
 	
 	
-	d:=resta(TRUE OR FALSE);
+	d:=resta(TRUE AND FALSE);
 	
 	
 
