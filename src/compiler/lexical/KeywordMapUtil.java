@@ -20,7 +20,7 @@ public class KeywordMapUtil {
 		
 		keywordMap = new HashMap<String, Integer>();
 		keywordMap.put("AND", sym.AND);
-		keywordMap.put("ARRAY", sym.ARRAY);
+		//keywordMap.put("ARRAY", sym.ARRAY);
 	  	keywordMap.put("BEGIN", sym.BEGIN);
 	  	keywordMap.put("BOOLEAN", sym.BOOLEAN);
 	  	keywordMap.put("CONST", sym.CONST);
@@ -32,13 +32,13 @@ public class KeywordMapUtil {
 	  	keywordMap.put("INTEGER", sym.INTEGER);
 	  	keywordMap.put("MODULE", sym.MODULE);
 	  	keywordMap.put("NOT", sym.NOT);
-	  	keywordMap.put("OF", sym.OF);
-	  	keywordMap.put("OR", sym.OR);
+	  	//keywordMap.put("OF", sym.OF);
+	  	//keywordMap.put("OR", sym.OR);
 	  	keywordMap.put("PROCEDURE", sym.PROCEDURE);
 	  	keywordMap.put("RECORD", sym.RECORD);
 	  	keywordMap.put("RETURN", sym.RETURN);
 	  	keywordMap.put("THEN", sym.THEN);
-	  	keywordMap.put("TO", sym.TO);
+	  	//keywordMap.put("TO", sym.TO);
 	  	keywordMap.put("TRUE", sym.TRUE);
 	  	keywordMap.put("TYPE", sym.TYPE);
 	  	keywordMap.put("VAR", sym.VAR);

@@ -53,15 +53,12 @@ parser code {:
 // Declaracion de terminales
 
 terminal Token PLUS;
-terminal Token MINUS;
 terminal Token DIVIDE;
-terminal Token TIMES;
 
 terminal Token STRING;
 terminal Token INTEGER_LITERAL;
 
 terminal Token AND;
-terminal Token ARRAY;
 terminal Token BEGIN;
 terminal Token BOOLEAN;
 terminal Token CONST;
@@ -69,18 +66,14 @@ terminal Token DO;
 terminal Token ELSE;
 terminal Token END;
 terminal Token FALSE;
-terminal Token FOR;
 terminal Token IF;
 terminal Token INTEGER;
 terminal Token MODULE;
 terminal Token NOT;
-terminal Token OF;
-terminal Token OR;
 terminal Token PROCEDURE;
 terminal Token RECORD;
 terminal Token RETURN;
 terminal Token THEN;
-terminal Token TO;
 terminal Token TRUE;
 terminal Token TYPE;
 terminal Token VAR;
@@ -92,7 +85,6 @@ terminal Token WRITELN;
 terminal Token ASSIGNMENT;
 terminal Token EQUAL;
 terminal Token LESS_THAN;
-terminal Token MORE_THAN;
 terminal Token NOT_EQUAL;
 terminal Token DOT;
 terminal Token COMMA;
@@ -103,6 +95,15 @@ terminal Token RIGHT_PARENTHESIS;
 terminal Token LEFT_BRACKET;
 terminal Token RIGHT_BRACKET;
 terminal Token IDENTIFIER;
+
+//terminal Token MINUS;
+//terminal Token TIMES;
+//terminal Token ARRAY;
+//terminal Token FOR;
+//terminal Token OF;
+//terminal Token OR;
+//terminal Token TO;
+//terminal Token MORE_THAN;
 
 // Declaracion de no terminales
 // no modificar los propuestos
@@ -123,7 +124,7 @@ non terminal			writestring_params, writeint_params, writeln_paren;
 non terminal			ident_list, ident_sub_list, var_type, prim_types, const_value, ident_plus, ident_plus_options, property_access;
 
 // Declaracion de relaciones de precedencia
-precedence left     PLUS, MINUS, DIVIDE;
+precedence left     PLUS, DIVIDE;
 precedence left     LESS_THAN, NOT_EQUAL, AND;
 
 // Declaracion de reglas de produccion

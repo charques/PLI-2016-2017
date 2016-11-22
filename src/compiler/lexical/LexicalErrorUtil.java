@@ -8,8 +8,8 @@ public class LexicalErrorUtil {
 	private static LexicalErrorManager lexicalErrorManager = new LexicalErrorManager();
 	
 	private static final String errorMsg[] = { 
-			"Error: Unmatched end-of-comment punctuation.",
-			"Error: Unmatched start-of-comment punctuation.", 
+			"Error: Unmatched end-of-comment.",
+			"Error: Unmatched start-of-comment.", 
 			"Error: Unclosed string.",
 			"Error: Malformed identifier.",
 			"Error: Malformed integer.",
