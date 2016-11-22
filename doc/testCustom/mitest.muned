@@ -1,0 +1,90 @@
+MODULE uno;
+(* programa vacio *)
+  CONST constante1 = 5;
+	constante2 = TRUE;
+  	constante3 = FALSE;
+
+  TYPE 
+  	TipoPersona = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
+      
+    TipoPersona2 = RECORD
+      edad   : INTEGER;
+      dni    : INTEGER;
+      casado : BOOLEAN;
+    END;
+
+  VAR   variable1,variable2 : INTEGER;
+ 	variable3,variable4 : BOOLEAN;
+  	variable5,variable6,variable7 : miTipo1;
+
+  PROCEDURE procedimiento ( v,x : INTEGER;
+			    y : BOOLEAN);
+	VAR aux, index : INTEGER;
+  BEGIN
+	aux := index;
+  END procedimiento;
+
+ PROCEDURE funcion ():BOOLEAN;
+        VAR aux, index : INTEGER;
+  BEGIN 
+        aux := index;
+	RETURN aux;
+  END funcion;
+
+
+  BEGIN
+
+	variable1 := 3 / 4 + 2;
+	variable2 := 3 / (4 + 2);
+	variable3 := (3 + 2 +1);
+	variable4 := variable3 + (2 + 1);
+
+	variable1 := (TRUE AND (b < c)); 
+	variable2 := NOT ( a < b) AND (9 < d);
+	variable3 := (a <> b) AND (b <> c) AND (c <> d);
+	variable4 := (a <> b) AND ((b <> c) AND (c <> d));
+	variable5 := 4<6;
+	variable5 := (5<>5);
+	variable6 := NOT TRUE;
+	variable7 := NOT ( a AND b);
+	variable9 := (a AND TRUE);
+
+	
+	variable4 := (45);
+	v[5] := (TRUE);
+	variable3 := (variable2);
+	variable5 := (v[6]);
+	
+	IF v[5] 
+		variable := 45;
+		IF 4<>5 THEN
+			variable := 34;
+		ELSE
+			variable := 43;
+			funcion1;
+			funcion2(V[4], 5, variable, TRUE);
+			funcion3();
+
+		END;
+	END;
+	
+	variable := funcion2(5, 4+3);
+
+	WHILE a<5 DO
+         a:=a+1;
+         WRITEINT(a);
+         WRITESTRING(b);
+         WRITELN;
+         WRITELN();
+		v[45] := 4<1;
+	END;
+
+	WRITELN;
+	WRITEINT(24/3);
+	WRITESTRING("Hola Mundo!"); 
+	
+  END uno;

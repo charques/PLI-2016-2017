@@ -115,12 +115,12 @@ non terminal			var_spec, var_list, var_block;
 non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_end;
 non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values, by_reference;
 non terminal			stmt_spec;
-non terminal			stmt_list, stmt, expr, proc_call_stmt, proc_call_expr, proc_call_params, expr_list, expr_sub_list, else_part;
+non terminal			stmt_list, stmt, if_stmt, while_stmt, expr, expr_arit, expr_logic, proc_call_stmt, proc_call_expr, proc_call_params, expr_list, expr_sub_list, else_part;
 
 non terminal			vector, vector_index;
 non terminal			writestring_params, writeint_params, writeln_paren;
 
-non terminal			ident_list, ident_sub_list, var_type, prim_types, const_value, ident_plus, ident_plus_options, property_access, not_part;
+non terminal			ident_list, ident_sub_list, var_type, prim_types, const_value, ident_plus, ident_plus_options, property_access;
 
 // Declaracion de relaciones de precedencia
 precedence left     PLUS, MINUS, DIVIDE;
@@ -160,7 +160,7 @@ const_spec ::= CONST const_list
 	| /* empty */;
 const_list ::= const_block const_list 
 	| /* empty */;
-const_block ::= ident_list EQUAL not_part const_value SEMICOLON;
+const_block ::= ident_list EQUAL const_value SEMICOLON;
 
 /* types - record */
 type_spec ::= TYPE type_list 
@@ -213,14 +213,19 @@ stmt_list ::= stmt_list stmt
 	| stmt;
 stmt ::= proc_call_stmt SEMICOLON
 	| ident_plus ASSIGNMENT expr SEMICOLON
-	| IF expr THEN stmt_spec else_part END SEMICOLON
-	| WHILE expr DO stmt_spec END SEMICOLON
+	| if_stmt
+	| while_stmt
 	| WRITESTRING LEFT_PARENTHESIS writestring_params RIGHT_PARENTHESIS SEMICOLON
 	| WRITEINT LEFT_PARENTHESIS writeint_params RIGHT_PARENTHESIS SEMICOLON
 	| WRITELN writeln_paren SEMICOLON;
 
+if_stmt ::= IF expr THEN stmt_spec else_part END SEMICOLON
+	|  IF error END {: syntaxErrorManager.syntaxDebug ("Se esperaba la palabra reservada THEN.");:}
+    |  IF error THEN {: syntaxErrorManager.syntaxDebug ("Error en la expresión lógica de la sentencia condicional."); :};
 else_part ::= ELSE stmt_spec 
 	| /* empty */;
+	
+while_stmt ::= WHILE expr DO stmt_spec END SEMICOLON;
 
 ident_plus ::= IDENTIFIER 
 	| IDENTIFIER ident_plus_options;
@@ -228,7 +233,8 @@ ident_plus_options ::= vector
 	| property_access;
 vector ::= LEFT_BRACKET vector_index RIGHT_BRACKET;
 vector_index ::= ident_plus 
-	| INTEGER_LITERAL 
+	| INTEGER_LITERAL
+	| expr_arit
 	| vector;
 property_access ::= DOT IDENTIFIER 
 	| DOT IDENTIFIER property_access;
@@ -243,20 +249,26 @@ writestring_params ::= STRING
 	| proc_call_expr;
 writeint_params ::= INTEGER_LITERAL 
 	| ident_plus 
-	| proc_call_expr;
+	| proc_call_expr
+	| expr_arit;
 writeln_paren ::= LEFT_PARENTHESIS RIGHT_PARENTHESIS 
 	| /* empty */;
 
 expr ::= LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
-	| expr PLUS expr
-	| expr DIVIDE expr
-	| expr NOT_EQUAL expr
-	| expr LESS_THAN expr
-	| expr AND expr
-	| NOT expr
+	| expr_arit
+	| expr_logic
 	| ident_plus
 	| proc_call_expr
-	| const_value;
+	| const_value
+	| error RIGHT_PARENTHESIS {: syntaxErrorManager.syntaxDebug ("Esto es un error en exp..."); :};
+	
+expr_arit ::= expr PLUS expr
+	| expr DIVIDE expr;
+	
+expr_logic ::= expr NOT_EQUAL expr
+	| expr LESS_THAN expr
+	| expr AND expr
+	| NOT expr;
 
 expr_list ::= expr expr_sub_list 
 	| /* empty */; 
@@ -274,8 +286,6 @@ prim_types ::= INTEGER
 const_value ::= INTEGER_LITERAL 
 	| TRUE 
 	| FALSE;
-not_part ::= NOT 
-	| /* empty */;
 
 /**
 	TODO
@@ -295,8 +305,11 @@ entre paréntesis. (Esta definición puede depender del lenguaje en concreto).
 
 /*
 DUDAS
-
+ - scanner. Parar el encontrar un error?
+ - errores sintactico? cuantos?
+ - varios return? return al final de la función?
  - punto y coma al final de las listas de parametros. --> subp_params
+ - expr_arit y expr_logic. Estoy usando la aritmetica en el indice de los vectores y en el Writeint.
  - Uso de NOT ¿el las constants? - https://2017.cursosvirtuales.uned.es/dotlrn/grados/asignaturas/71013130-17/uforums/thread-view?message_id=26196320
  - indice vectores - https://2017.cursosvirtuales.uned.es/dotlrn/grados/asignaturas/71013130-17/uforums/message-view?message_id=24854112
  

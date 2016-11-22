@@ -69,7 +69,7 @@ BEGIN
  	bol3:=(bol1 AND (bol2 AND TRUE));
  	
  	
-	(*WRITEINT(2+3);*)
+	WRITEINT(2+3);
 	
 	IF (ahora[v[1]]<>(TRUE AND FALSE)) THEN
 	ELSE
