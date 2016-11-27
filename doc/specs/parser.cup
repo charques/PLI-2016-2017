@@ -218,7 +218,8 @@ stmt ::= proc_call_stmt SEMICOLON
 	| while_stmt
 	| WRITESTRING LEFT_PARENTHESIS writestring_params RIGHT_PARENTHESIS SEMICOLON
 	| WRITEINT LEFT_PARENTHESIS writeint_params RIGHT_PARENTHESIS SEMICOLON
-	| WRITELN writeln_paren SEMICOLON;
+	| WRITELN writeln_paren SEMICOLON
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error en la sentencia."); :};
 
 if_stmt ::= IF expr THEN stmt_spec else_part END SEMICOLON
 	|  IF error END {: syntaxErrorManager.syntaxDebug ("Se esperaba la palabra reservada THEN.");:}

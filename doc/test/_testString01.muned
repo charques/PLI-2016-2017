@@ -3,7 +3,8 @@
 "  "
 "¡cadena con especiales!"
 "\t cadena con tabulador"
-"cadena con salto de línea \n despues del salto"
+"cadena con salto de línea 
+despues del salto"
 "cadena con \"comillas \""
 "cadena con \\contra barra"
 "cadena no cerrada

@@ -45,11 +45,11 @@ INTEGER_MALFORMED = 0+[1-9]*
 		yybegin(COMMENT);
 		commentCount = commentCount + 1;
 	}
-	"*)" { LexicalErrorUtil.error(LexicalErrorUtil.E_ENDCOMMENT, yyline + 1, yycolumn + 1, ""); }
+	"*)" { LexicalErrorUtil.fatalError(LexicalErrorUtil.E_ENDCOMMENT, yyline + 1, yycolumn + 1, ""); }
 
 	// Literals
 	{INTEGER_LITERAL} 	{ return (new Token(sym.INTEGER_LITERAL, yyline + 1, yycolumn + 1, yytext())); }
-	{INTEGER_MALFORMED} { LexicalErrorUtil.error(LexicalErrorUtil.E_WRONGINTEG, yyline + 1, yycolumn + 1, yytext()); }
+	{INTEGER_MALFORMED} { LexicalErrorUtil.fatalError(LexicalErrorUtil.E_WRONGINTEG, yyline + 1, yycolumn + 1, yytext()); }
 	\" { 
 		string.setLength(0);
 		yybegin(STRING); 
@@ -65,7 +65,7 @@ INTEGER_MALFORMED = 0+[1-9]*
 			return (new Token(sym.IDENTIFIER, yyline + 1, yycolumn + 1, yytext().toLowerCase()));
 		} 
 	}
-	{IDENTIFIER_MALFORMED} { LexicalErrorUtil.error(LexicalErrorUtil.E_WRONGIDENT, yyline + 1, yycolumn + 1, yytext()); }
+	{IDENTIFIER_MALFORMED} { LexicalErrorUtil.fatalError(LexicalErrorUtil.E_WRONGIDENT, yyline + 1, yycolumn + 1, yytext()); }
 	
     // Delimiters
     "("		{ return (new Token(sym.LEFT_PARENTHESIS, yyline + 1, yycolumn + 1, yytext())); }
@@ -81,6 +81,7 @@ INTEGER_MALFORMED = 0+[1-9]*
     "/" 	{ return (new Token(sym.DIVIDE, yyline + 1, yycolumn + 1, yytext())); }
     "<"		{ return (new Token(sym.LESS_THAN, yyline + 1, yycolumn + 1, yytext())); }
 	"<>"	{ return (new Token(sym.NOT_EQUAL, yyline + 1, yycolumn + 1, yytext())); }
+	"="		{ return (new Token(sym.EQUAL, yyline + 1, yycolumn + 1, yytext())); }
 	":="	{ return (new Token(sym.ASSIGNMENT, yyline + 1, yycolumn + 1, yytext())); }
 	"."		{ return (new Token(sym.DOT, yyline + 1, yycolumn + 1, yytext())); }
 
@@ -88,7 +89,7 @@ INTEGER_MALFORMED = 0+[1-9]*
    	{WHITE_SPACE}	{ /* ignore */}
 
     // no match
-	[^]	{ LexicalErrorUtil.error(LexicalErrorUtil.E_UNMATCHED, yyline + 1, yycolumn + 1, yytext()); }
+	[^]	{ LexicalErrorUtil.fatalError(LexicalErrorUtil.E_UNMATCHED, yyline + 1, yycolumn + 1, yytext()); }
 }
 	
 <COMMENT> {
@@ -110,19 +111,17 @@ INTEGER_MALFORMED = 0+[1-9]*
 	}
 	[^\n\r\"\\]+	{ string.append( yytext() ); }
     \\t				{ string.append('\t'); }
-    \\n				{ string.append('\n'); }
-	\\r             { string.append('\r'); }
     \\\"            { string.append('\"'); }
     \\              { string.append('\\'); }
     [^]	{
-    	LexicalErrorUtil.error(LexicalErrorUtil.E_UNCLOSEDSTR, yyline + 1, yycolumn + 1, string.toString());
+    	LexicalErrorUtil.fatalError(LexicalErrorUtil.E_UNCLOSEDSTR, yyline + 1, yycolumn + 1, string.toString());
     	yybegin(YYINITIAL);
     }
 }
 
 <<EOF>> {
 	if (commentCount > 0) {
-		LexicalErrorUtil.error(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, "");
+		LexicalErrorUtil.fatalError(LexicalErrorUtil.E_STARTCOMMENT, yyline + 1, yycolumn + 1, "");
 	}
 	return null;
 }
