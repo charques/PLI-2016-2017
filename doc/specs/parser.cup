@@ -146,11 +146,11 @@ program ::=
 /* ------ */
 axiom ::= module_header declaration_blocks_spec begin_spec stmt_spec end_spec;
 module_header ::= MODULE IDENTIFIER SEMICOLON
-	| error {: syntaxErrorManager.syntaxDebug ("Error module header declaration"); :};
+	| error {: syntaxErrorManager.syntaxDebug ("Error: cabecera de módulo erronea"); :};
 declaration_blocks_spec ::= const_spec type_spec var_spec subp_spec;
 begin_spec ::= BEGIN;
 end_spec ::= END IDENTIFIER SEMICOLON
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error module end declaration"); :};
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: final de módulo erroneo"); :};
 
 /* --------- */
 /* constants */
@@ -160,7 +160,7 @@ const_spec ::= CONST const_list
 const_list ::= const_block const_list 
 	| /* empty */;
 const_block ::= IDENTIFIER EQUAL const_value SEMICOLON
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error const declaration"); :};
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: declaración de contantes erronea"); :};
 
 /* -------------- */
 /* types - record */
@@ -171,13 +171,13 @@ type_list ::= type_list record_type
 	| record_type;
 record_type ::= record_header record_var_list record_end;
 record_header ::= IDENTIFIER EQUAL RECORD
-	| error {: syntaxErrorManager.syntaxDebug ("Error record header declaration"); :};
+	| error {: syntaxErrorManager.syntaxDebug ("Error: cabecera de registro erronea"); :};
 record_var_list ::= record_var_list record_var 
 	| record_var;
 record_var ::= IDENTIFIER COLON prim_types SEMICOLON
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error record properties declaration"); :};
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: declaración de propiedades erronea"); :};
 record_end ::= END SEMICOLON
-	| error {: syntaxErrorManager.syntaxDebug ("Error record end declaration"); :};
+	| error {: syntaxErrorManager.syntaxDebug ("Error: final de registro erronea"); :};
 
 /* ---- */
 /* vars */
@@ -187,7 +187,7 @@ var_spec ::= VAR var_list
 var_list ::= var_block var_list 
 	| /* empty */;
 var_block ::= ident_list COLON var_type SEMICOLON
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error var declaration"); :};
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: declaración de variables erronea"); :};
 
 /* ----------- */
 /* subprograms */
@@ -202,13 +202,12 @@ proc ::= proc_header declaration_blocks_spec begin_spec stmt_spec end_spec;
 func ::= func_header declaration_blocks_spec begin_spec stmt_spec func_return end_spec;
 proc_header ::= subp_header SEMICOLON;
 func_header ::= subp_header COLON prim_types SEMICOLON
-	| subp_header error {: syntaxErrorManager.syntaxDebug ("Error xxx"); :};
+	| subp_header error {: syntaxErrorManager.syntaxDebug ("Error: cabecera de función erronea"); :};
 subp_header ::= PROCEDURE IDENTIFIER subp_params
-	| PROCEDURE error subp_params {: syntaxErrorManager.syntaxDebug ("Error procedure header declaration"); :};
+	| PROCEDURE error subp_params {: syntaxErrorManager.syntaxDebug ("Error: cabecera de procedimiento erronea"); :};
 func_return ::= RETURN func_return_values SEMICOLON;
 func_return_values ::= IDENTIFIER 
-	| INTEGER_LITERAL
-	| error {: syntaxErrorManager.syntaxDebug ("Error procedure return value"); :};
+	| INTEGER_LITERAL;
 subp_params ::= LEFT_PARENTHESIS param_block_list RIGHT_PARENTHESIS 
 	| /* empty */;
 param_block_list ::= param_block param_block_sub_list 
@@ -216,7 +215,7 @@ param_block_list ::= param_block param_block_sub_list
 param_block_sub_list ::= SEMICOLON param_block param_block_sub_list 
 	| /* empty */;
 param_block ::= by_reference ident_list COLON var_type
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error procedure header params declaration"); :};
+	| error {: syntaxErrorManager.syntaxDebug ("Error: parametros erroneos"); :};
 by_reference ::= VAR 
 	| /* empty */;
 
@@ -273,7 +272,7 @@ property_access ::= DOT IDENTIFIER
 proc_call_stmt ::= proc_call_expr SEMICOLON;
 proc_call_expr ::= IDENTIFIER proc_call_params;
 proc_call_params ::= LEFT_PARENTHESIS expr_list RIGHT_PARENTHESIS
-	| LEFT_PARENTHESIS error RIGHT_PARENTHESIS {: syntaxErrorManager.syntaxDebug ("Error: procedure call mal formed."); :};
+	| LEFT_PARENTHESIS error RIGHT_PARENTHESIS {: syntaxErrorManager.syntaxDebug ("Error: llamada a procedimiento mal formada."); :};
 
 writestring_params ::= STRING 
 	| ident_plus 
