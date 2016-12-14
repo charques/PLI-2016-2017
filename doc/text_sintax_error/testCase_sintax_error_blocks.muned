@@ -1,0 +1,36 @@
+MODULE uno;
+(* programa vacio*)
+
+  CONST A = 1;
+  	< = 2;
+  	
+  TYPE TipoPersona = RECORD 
+                    edad   : INTEGER; 
+                    dni    : INTEGER; 
+                    casado ; BOOLEAN; 
+                   END; 
+       TipoCoche = RECORDE 
+                    edad   : INTEGER; 
+                   END 
+  VAR x, y : 1;
+          abierto : BOOLEAN;
+          v1 v2 : TipoVector;
+          c1, c2 : TipoComplejo;
+
+  PROCEDURE invertir (VAR v, v2 : TipoVector; va : INTEGER);
+      BEGIN
+      
+      END invertir;
+      
+  PROCEDURE BEGIN (VAR v, v2 : TipoVector; va : INTEGER;;
+      BEGIN
+      
+      END invertir2;
+  PROCEDURE invertir3 (VAR v, v2 : TipoVector; va : INTEGER;):INTEGER;
+      BEGIN
+      	RETURN <;
+      END invertir3;
+
+  BEGIN
+	
+  END uno;

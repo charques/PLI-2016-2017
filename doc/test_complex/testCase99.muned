@@ -3,9 +3,9 @@ MODULE cuatro;
   (* pruebas con operaciones *)
 
   CONST 
-  	A, C = 10;
+  	A = 10;
 	B = 20;
-	D = NOT TRUE;
+	D = TRUE;
 	
   TYPE 
   	TipoPersona = RECORD

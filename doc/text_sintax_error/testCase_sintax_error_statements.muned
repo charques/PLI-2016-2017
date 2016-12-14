@@ -1,0 +1,64 @@
+MODULE uno;
+  BEGIN
+  
+	mifunction1(sjkd  dddd); 	(* error parametros *)
+	mifunction2(sjkd)			(* falta coma *)
+	
+	mifunction2();				(* ok *)
+	
+	a = 21; 					(* asignación mal formada 1 - no entra por el flujo de asignación *)
+	
+	b := +;						(* asignación mal formada 2 *)
+	
+	IF a1< THEN					(* error en expresión IF *)
+	END; 
+	
+	IF a1<b3 THEN				
+		a : 21;					(* sentencia erronea *)
+	END;
+	
+	WHILE <b3 DO				(* error en expresión WHILE *)
+		
+	END;
+	
+	WRITELN(;
+	mifunction();
+	mifunction();
+	mifunction();
+	mifunction();
+	WRITESTRING"Suma:");
+	mifunction();
+	mifunction();
+	mifunction();
+	mifunction();
+    WRITEINT 5+5);
+    
+	mifunction();
+	mifunction();
+	mifunction();
+	mifunction();
+	
+	a := a+;
+	
+	v[ddd+] := a;
+	
+	IF () THEN
+	END;
+	
+	IF (<+a) THEN
+	END;
+	
+	IF (a++a) THEN
+	END;
+	
+	IF (a<<a) THEN
+	END;
+	
+	IF (a<><a) THEN
+	END;
+	IF (a AND +) THEN
+	END;
+	IF (NOT +) THEN
+	END;
+	
+  END uno;

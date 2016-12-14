@@ -1,6 +1,6 @@
 package compiler.syntax;
 
-// Declaraci�n de importaciones 
+// Declaracion de importaciones 
 //(No modificar las proporcionadas. Se pueden agregar mas)
 
 import java_cup.runtime.Symbol;
@@ -96,15 +96,6 @@ terminal Token LEFT_BRACKET;
 terminal Token RIGHT_BRACKET;
 terminal Token IDENTIFIER;
 
-//terminal Token MINUS;
-//terminal Token TIMES;
-//terminal Token ARRAY;
-//terminal Token FOR;
-//terminal Token OF;
-//terminal Token OR;
-//terminal Token TO;
-//terminal Token MORE_THAN;
-
 // Declaracion de no terminales
 // no modificar los propuestos
 
@@ -116,7 +107,7 @@ non terminal			var_spec, var_list, var_block;
 non terminal			type_spec, type_list, record_type, record_header, record_var_list, record_var, record_end;
 non terminal			subp_spec, subp_list, proc, func, proc_header, func_header, subp_header, subp_params, param_block_list, param_block_sub_list, param_block, func_return, func_return_values, by_reference;
 non terminal			stmt_spec;
-non terminal			stmt_list, stmt, if_stmt, while_stmt, expr, expr_arit, expr_logic, proc_call_stmt, proc_call_expr, proc_call_params, expr_list, expr_sub_list, else_part;
+non terminal			stmt_list, stmt, simple_id, assig_stmt, if_stmt, while_stmt, writestring_stmt, writeint_stmt, writeln_stmt, expr, expr_arit, expr_logic, proc_call_stmt, proc_call_expr, proc_call_params, expr_list, expr_sub_list, else_part;
 
 non terminal			vector, vector_index;
 non terminal			writestring_params, writeint_params, writeln_paren;
@@ -124,8 +115,9 @@ non terminal			writestring_params, writeint_params, writeln_paren;
 non terminal			ident_list, ident_sub_list, var_type, prim_types, const_value, ident_plus, ident_plus_options, property_access;
 
 // Declaracion de relaciones de precedencia
-precedence left     PLUS, DIVIDE;
-precedence left     LESS_THAN, NOT_EQUAL, AND;
+precedence right    NOT;
+precedence left     PLUS, DIVIDE, AND, LESS_THAN, NOT_EQUAL;
+precedence left     DOT, LEFT_PARENTHESIS, RIGHT_PARENTHESIS, LEFT_BRACKET, RIGHT_BRACKET;
 
 // Declaracion de reglas de produccion
 
@@ -149,40 +141,57 @@ program ::=
   		syntaxErrorManager.syntaxInfo ("Parsing process ended.");
    :};
 
+/* ------ */
 /* module */
-axiom ::= module_header declaration_blocks_spec begin_spec stmt_spec end_spec; 
-module_header ::= MODULE IDENTIFIER SEMICOLON;
+/* ------ */
+axiom ::= module_header declaration_blocks_spec begin_spec stmt_spec end_spec;
+module_header ::= MODULE IDENTIFIER SEMICOLON
+	| error {: syntaxErrorManager.syntaxDebug ("Error module header declaration"); :};
 declaration_blocks_spec ::= const_spec type_spec var_spec subp_spec;
 begin_spec ::= BEGIN;
-end_spec ::= END IDENTIFIER SEMICOLON;
+end_spec ::= END IDENTIFIER SEMICOLON
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error module end declaration"); :};
 
+/* --------- */
 /* constants */
+/* --------- */
 const_spec ::= CONST const_list 
 	| /* empty */;
 const_list ::= const_block const_list 
 	| /* empty */;
-const_block ::= ident_list EQUAL const_value SEMICOLON;
+const_block ::= IDENTIFIER EQUAL const_value SEMICOLON
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error const declaration"); :};
 
+/* -------------- */
 /* types - record */
+/* -------------- */
 type_spec ::= TYPE type_list 
 	| /*empty */;
 type_list ::= type_list record_type 
 	| record_type;
 record_type ::= record_header record_var_list record_end;
-record_header ::= IDENTIFIER EQUAL RECORD;
+record_header ::= IDENTIFIER EQUAL RECORD
+	| error {: syntaxErrorManager.syntaxDebug ("Error record header declaration"); :};
 record_var_list ::= record_var_list record_var 
 	| record_var;
-record_var ::= IDENTIFIER COLON prim_types SEMICOLON;
-record_end ::= END SEMICOLON;
+record_var ::= IDENTIFIER COLON prim_types SEMICOLON
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error record properties declaration"); :};
+record_end ::= END SEMICOLON
+	| error {: syntaxErrorManager.syntaxDebug ("Error record end declaration"); :};
 
+/* ---- */
 /* vars */
+/* ---- */
 var_spec ::= VAR var_list 
 	| /* empty */;
 var_list ::= var_block var_list 
 	| /* empty */;
-var_block ::= ident_list COLON var_type SEMICOLON;
+var_block ::= ident_list COLON var_type SEMICOLON
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error var declaration"); :};
 
+/* ----------- */
 /* subprograms */
+/* ----------- */
 subp_spec ::= subp_list 
 	| /* empty */;
 subp_list ::= subp_list proc 
@@ -192,42 +201,62 @@ subp_list ::= subp_list proc
 proc ::= proc_header declaration_blocks_spec begin_spec stmt_spec end_spec;
 func ::= func_header declaration_blocks_spec begin_spec stmt_spec func_return end_spec;
 proc_header ::= subp_header SEMICOLON;
-func_header ::= subp_header COLON prim_types SEMICOLON;
-subp_header ::= PROCEDURE IDENTIFIER subp_params;
+func_header ::= subp_header COLON prim_types SEMICOLON
+	| subp_header error {: syntaxErrorManager.syntaxDebug ("Error xxx"); :};
+subp_header ::= PROCEDURE IDENTIFIER subp_params
+	| PROCEDURE error subp_params {: syntaxErrorManager.syntaxDebug ("Error procedure header declaration"); :};
 func_return ::= RETURN func_return_values SEMICOLON;
 func_return_values ::= IDENTIFIER 
-	| INTEGER_LITERAL;
+	| INTEGER_LITERAL
+	| error {: syntaxErrorManager.syntaxDebug ("Error procedure return value"); :};
 subp_params ::= LEFT_PARENTHESIS param_block_list RIGHT_PARENTHESIS 
 	| /* empty */;
 param_block_list ::= param_block param_block_sub_list 
 	| /* empty */;
 param_block_sub_list ::= SEMICOLON param_block param_block_sub_list 
 	| /* empty */;
-param_block ::= by_reference ident_list COLON var_type;
+param_block ::= by_reference ident_list COLON var_type
+	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error procedure header params declaration"); :};
 by_reference ::= VAR 
 	| /* empty */;
 
+/* ---------- */
 /* statements */
+/* ---------- */
 stmt_spec ::= stmt_list 
 	| /* empty */;
 stmt_list ::= stmt_list stmt 
 	| stmt;
-stmt ::= proc_call_stmt SEMICOLON
-	| ident_plus ASSIGNMENT expr SEMICOLON
+stmt ::= simple_id
+	| assig_stmt  
+	| proc_call_stmt
 	| if_stmt
 	| while_stmt
-	| WRITESTRING LEFT_PARENTHESIS writestring_params RIGHT_PARENTHESIS SEMICOLON
-	| WRITEINT LEFT_PARENTHESIS writeint_params RIGHT_PARENTHESIS SEMICOLON
-	| WRITELN writeln_paren SEMICOLON
-	| error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error en la sentencia."); :};
+	| writestring_stmt
+	| writeint_stmt
+	| writeln_stmt;
+
+simple_id ::= IDENTIFIER SEMICOLON
+	| IDENTIFIER error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion no esperada."); :};
+assig_stmt ::= ident_plus ASSIGNMENT expr SEMICOLON
+	| ident_plus ASSIGNMENT error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion no esperada en la asignacion."); :};
 
 if_stmt ::= IF expr THEN stmt_spec else_part END SEMICOLON
-	|  IF error END {: syntaxErrorManager.syntaxDebug ("Se esperaba la palabra reservada THEN.");:}
-    |  IF error THEN {: syntaxErrorManager.syntaxDebug ("Error en la expresión lógica de la sentencia condicional."); :};
-else_part ::= ELSE stmt_spec 
+	| IF error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion erronea en sentencia IF."); :};
+else_part ::= ELSE stmt_spec
 	| /* empty */;
 	
-while_stmt ::= WHILE expr DO stmt_spec END SEMICOLON;
+while_stmt ::= WHILE expr DO stmt_spec END SEMICOLON
+	| WHILE error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion erronea en sentencia WHILE."); :};
+
+writestring_stmt ::= WRITESTRING LEFT_PARENTHESIS writestring_params RIGHT_PARENTHESIS SEMICOLON
+	| WRITESTRING error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion WRITESTRING erronea."); :};
+
+writeint_stmt ::= WRITEINT LEFT_PARENTHESIS writeint_params RIGHT_PARENTHESIS SEMICOLON
+	| WRITEINT error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion WRITEINT erronea."); :};
+	
+writeln_stmt ::= WRITELN writeln_paren SEMICOLON
+	| WRITELN error SEMICOLON {: syntaxErrorManager.syntaxDebug ("Error: expresion WRITELN erronea."); :};
 
 ident_plus ::= IDENTIFIER 
 	| IDENTIFIER ident_plus_options;
@@ -241,10 +270,10 @@ vector_index ::= ident_plus
 property_access ::= DOT IDENTIFIER 
 	| DOT IDENTIFIER property_access;
 
-proc_call_stmt ::= IDENTIFIER 
-	| proc_call_expr;
+proc_call_stmt ::= proc_call_expr SEMICOLON;
 proc_call_expr ::= IDENTIFIER proc_call_params;
-proc_call_params ::= LEFT_PARENTHESIS expr_list RIGHT_PARENTHESIS;
+proc_call_params ::= LEFT_PARENTHESIS expr_list RIGHT_PARENTHESIS
+	| LEFT_PARENTHESIS error RIGHT_PARENTHESIS {: syntaxErrorManager.syntaxDebug ("Error: procedure call mal formed."); :};
 
 writestring_params ::= STRING 
 	| ident_plus 
@@ -256,13 +285,15 @@ writeint_params ::= INTEGER_LITERAL
 writeln_paren ::= LEFT_PARENTHESIS RIGHT_PARENTHESIS 
 	| /* empty */;
 
+/* ---------- */
+/* expresions */
+/* ---------- */
 expr ::= LEFT_PARENTHESIS expr RIGHT_PARENTHESIS
 	| expr_arit
 	| expr_logic
 	| ident_plus
 	| proc_call_expr
-	| const_value
-	| error RIGHT_PARENTHESIS {: syntaxErrorManager.syntaxDebug ("Esto es un error en exp..."); :};
+	| const_value;
 	
 expr_arit ::= expr PLUS expr
 	| expr DIVIDE expr;
@@ -277,7 +308,9 @@ expr_list ::= expr expr_sub_list
 expr_sub_list ::= expr_sub_list COMMA expr 
 	| /* empty */; 
 
+/* ------ */
 /* common */
+/* ------ */
 ident_list ::= IDENTIFIER ident_sub_list;
 ident_sub_list  ::= ident_sub_list COMMA IDENTIFIER 
 	| /* empty */;
@@ -288,31 +321,4 @@ prim_types ::= INTEGER
 const_value ::= INTEGER_LITERAL 
 	| TRUE 
 	| FALSE;
-
-/**
-	TODO
-	Write int con expresion.
-	Precedencia de operadores. Estudiar y aplicar.
-	Eliminar simbolos que no aplican en lexico y sintactico.
-	Revisión de documentación y de la gramática.
-*/
-
-/* Una expresión es una construcción sintáctica del lenguaje que devuelve al 
-contexto donde se evalúa un valor. Son expresiones los valores constantes de cualquier 
-tipo, los identificadores de constantes, variables enumeraciones y parámetros, 
-los elementos de vector, los campos de registros, y las llamadas a funciones. 
-También son expresiones cualquier combinación sintácticamente correcta de 
-expresiones utilizando operadores aritméticos, lógicos, relacionales y expresiones 
-entre paréntesis. (Esta definición puede depender del lenguaje en concreto). */
-
-/*
-DUDAS
- - scanner. Parar el encontrar un error?
- - errores sintactico? cuantos?
- - varios return? return al final de la función?
- - punto y coma al final de las listas de parametros. --> subp_params
- - expr_arit y expr_logic. Estoy usando la aritmetica en el indice de los vectores y en el Writeint.
- - Uso de NOT ¿el las constants? - https://2017.cursosvirtuales.uned.es/dotlrn/grados/asignaturas/71013130-17/uforums/thread-view?message_id=26196320
- - indice vectores - https://2017.cursosvirtuales.uned.es/dotlrn/grados/asignaturas/71013130-17/uforums/message-view?message_id=24854112
- 
-*/
+	
